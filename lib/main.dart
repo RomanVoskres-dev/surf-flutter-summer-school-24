@@ -1,127 +1,107 @@
-import 'package:flutter/foundation.dart';
+import '../feature/theme/ui/theme_builder.dart';
+import '../feature/theme/domain/theme_controller.dart';
+import '../uikit/theme/theme_data.dart';
+import '../feature/theme/di/theme_inherited.dart';
+import '../feature/theme/data/theme_repository.dart';
+import '../storage/theme/theme_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../homepage.dart';
 
-void main() => runApp(const PageViewExampleApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
+  final themeStorage = ThemeStorage(
+    prefs: prefs,
+  );
+  final themeRepository = ThemeRepository(
+    themeStorage: themeStorage,
+  );
+  final themeController = ThemeController(
+    themeRepository: themeRepository,
+  );
 
-class PageViewExampleApp extends StatelessWidget {
-  const PageViewExampleApp({super.key});
+  runApp(MaterialApp(home: HomePage(themeController: themeController)));
+}
+
+class App extends StatelessWidget {
+  final ThemeController themeController;
+
+  const App({
+    required this.themeController,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(),
-        body: const PageViewExample(),
+    return ThemeInherited(
+      themeController: themeController,
+      child: ThemeBuilder(
+        builder: (_, themeMode) {
+          return MaterialApp(
+            theme: AppThemeData.lightTheme,
+            darkTheme: AppThemeData.darkTheme,
+            themeMode: themeMode,
+            home: const Home(),
+          );
+        },
       ),
     );
   }
 }
 
-class PageViewExample extends StatefulWidget {
-  const PageViewExample({super.key});
-
-  @override
-  State<PageViewExample> createState() => _PageViewExampleState();
-}
-
-class _PageViewExampleState extends State<PageViewExample>
-    with TickerProviderStateMixin {
-  late PageController _pageViewController;
-  late TabController _tabController;
-  int _currentPageIndex = 1;
-
-  @override
-  void initState() {
-    super.initState();
-    _pageViewController = PageController();
-    _tabController = TabController(length: 4, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _pageViewController.dispose();
-    _tabController.dispose();
-  }
+class Home extends StatelessWidget {
+  const Home({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: <Widget>[
-        Row(
-          children: [
-            Text('$_currentPageIndex/4', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
-          ],
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
         ),
-        PageView(
-          controller: _pageViewController,
-          onPageChanged: _handlePageViewChanged,
-          children: <Widget>[
-            ScrollImage(pathImg: 'assets/imagesTemp/кавказ.jpg'),
-            ScrollImage(pathImg: 'assets/imagesTemp/Питер.jpg'),
-            ScrollImage(pathImg: 'assets/imagesTemp/Химки.jpg'),
-            ScrollImage(pathImg: 'assets/imagesTemp/Химки.jpg'),
-          ],
+        child: Center(
+          child: Column(
+            children: [
+              const Spacer(),
+              const SizedBox(height: 16),
+              OutlinedButton(
+                onPressed: () {
+                  ThemeInherited.of(context).switchThemeMode();
+                },
+                child: const Text('Switch theme'),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  ThemeInherited.of(context).setThemeMode(
+                    ThemeMode.light,
+                  );
+                },
+                child: const Text('Set light theme'),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  ThemeInherited.of(context).setThemeMode(
+                    ThemeMode.dark,
+                  );
+                },
+                child: const Text('Set dark theme'),
+              ),
+              const SizedBox(height: 16),
+              TextButton(
+                onPressed: () {
+                  ThemeInherited.of(context).setThemeMode(
+                    ThemeMode.system,
+                  );
+                },
+                child: const Text('Set system theme'),
+              ),
+              const Spacer(),
+            ],
+          ),
         ),
-      ],
-    );
-  }
-
-  void _handlePageViewChanged(int currentPageIndex) {
-    if (!_isOnDesktopAndWeb) {
-      _currentPageIndex = currentPageIndex+1;
-    }
-    else
-    {
-      _tabController.index = currentPageIndex;
-      _currentPageIndex = currentPageIndex;
-    }
-      setState(() {
-      
-    });
-  }
-
-
-  bool get _isOnDesktopAndWeb {
-    if (kIsWeb) {
-      return true;
-    }
-    switch (defaultTargetPlatform) {
-      case TargetPlatform.macOS:
-      case TargetPlatform.linux:
-      case TargetPlatform.windows:
-        return true;
-      case TargetPlatform.android:
-      case TargetPlatform.iOS:
-      case TargetPlatform.fuchsia:
-        return false;
-    }
-  }
-}
-
-class ScrollImage extends StatelessWidget {
-  const ScrollImage({
-    super.key,
-    required this.pathImg,
-  });
-
-  final String pathImg;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 40),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-        Text(pathImg),
-        Image.asset(
-          pathImg,
-          height: MediaQuery.of(context).size.height-300,
-          fit: BoxFit.cover,
-        ),
-      ],
       ),
     );
   }
