@@ -19,4 +19,10 @@ class MockPhotoRepository implements IPhotoRepository {
         ),
     ];
   }
+  
+  @override
+  Future<void> fillPhotos(List<PhotoObject> newphotos) {
+    // TODO: implement fillPhotos
+    throw UnimplementedError();
+  }
 }

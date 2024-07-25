@@ -1,10 +1,9 @@
+import 'package:surf_flutter_summer_school_24/photo/pageview/PhotoObj.dart';
+
 import '../feature/theme/ui/theme_builder.dart';
 import '../feature/theme/domain/theme_controller.dart';
-import '../photo/pageview/PhotoObj.dart';
 import '../uikit/theme/theme_data.dart';
 import '../feature/theme/di/theme_inherited.dart';
-import '../feature/theme/data/theme_repository.dart';
-import '../storage/theme/theme_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '/photo/pageview/photo_controller.dart';
@@ -106,7 +105,8 @@ class _HomeState extends State<Home> {
         future: _controller.getPhotos(),
         builder: (context, snapshot)
         {
-          if (snapshot != null)
+          List<PhotoObject>? photos = snapshot.data;
+          if (photos != null)
           {
             return GridView.builder(
             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
@@ -114,12 +114,12 @@ class _HomeState extends State<Home> {
                     childAspectRatio: 3 / 2,
                     crossAxisSpacing: 20,
                     mainAxisSpacing: 20),
-                itemCount: snapshot.length,
+                itemCount: photos.length,
                 itemBuilder: (BuildContext ctx, index) {
                   return GestureDetector(
                     child: Container(
                       alignment: Alignment.center,
-                      child: GridImage(pathImg: snapshot[index].url),
+                      child: GridImage(pathImg: photos[index].url),
                     ),
                     onTap: () {
                       Navigator.push(

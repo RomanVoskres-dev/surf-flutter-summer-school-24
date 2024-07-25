@@ -20,7 +20,7 @@ class PageViewExampleApp extends StatelessWidget {
             theme: AppThemeData.lightTheme,
             darkTheme: AppThemeData.darkTheme,
             themeMode: themeMode,
-            home: PageViewExample(),
+            home: PageViewExample(themeController: themeController),
           );
         },
       ),
@@ -29,14 +29,16 @@ class PageViewExampleApp extends StatelessWidget {
 }
 
 class PageViewExample extends StatefulWidget {
-  const PageViewExample({super.key});
+  const PageViewExample({required this.themeController, super.key});
+
+  final ThemeController themeController;
 
   @override
   State<PageViewExample> createState() => _PageViewExampleState();
 }
 
-class _PageViewExampleState extends State<PageViewExample>
-  with TickerProviderStateMixin {
+class _PageViewExampleState extends State<PageViewExample> with TickerProviderStateMixin {
+
   late PageController _pageViewController;
   late TabController _tabController;
   int _currentPageIndex = 1;
@@ -50,23 +52,30 @@ class _PageViewExampleState extends State<PageViewExample>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: <Widget>[
-        Row(
-          children: [Text('$_currentPageIndex/4', style: TextStyle(fontSize: 30), textAlign: TextAlign.center,)],
-        ),
-        PageView(
-          controller: _pageViewController,
-          onPageChanged: _handlePageViewChanged,
-          children: <Widget>[
-            ScrollImage(pathImg: 'assets/imagesTemp/кавказ.jpg'),
-            ScrollImage(pathImg: 'assets/imagesTemp/Питер.jpg'),
-            ScrollImage(pathImg: 'assets/imagesTemp/Химки.jpg'),
-            ScrollImage(pathImg: 'assets/imagesTemp/Химки.jpg'),
-          ],
-        ),
-      ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Постограм'),
+        centerTitle: true,
+        titleTextStyle: TextStyle(fontSize: 30),
+      ),
+      body: Stack(
+        alignment: Alignment.bottomCenter,
+        children: <Widget>[
+          Row(
+            children: [Text('$_currentPageIndex/4', style: TextStyle(fontSize: 30), textAlign: TextAlign.center,)],
+          ),
+          PageView(
+            controller: _pageViewController,
+            onPageChanged: _handlePageViewChanged,
+            children: <Widget>[
+              ScrollImage(pathImg: 'assets/imagesTemp/кавказ.jpg'),
+              ScrollImage(pathImg: 'assets/imagesTemp/Питер.jpg'),
+              ScrollImage(pathImg: 'assets/imagesTemp/Химки.jpg'),
+              ScrollImage(pathImg: 'assets/imagesTemp/Химки.jpg'),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -79,7 +88,7 @@ class _PageViewExampleState extends State<PageViewExample>
       _tabController.index = currentPageIndex;
       _currentPageIndex = currentPageIndex;
     }
-      setState(() {
+    setState(() {
       
     });
   }

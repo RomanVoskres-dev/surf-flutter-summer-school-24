@@ -1,3 +1,4 @@
+import 'package:surf_flutter_summer_school_24/Rest/request.dart';
 import '../feature/theme/domain/theme_controller.dart';
 import '../feature/theme/data/theme_repository.dart';
 import '../storage/theme/theme_storage.dart';
@@ -18,6 +19,8 @@ void main() async {
   final themeController = ThemeController(
     themeRepository: themeRepository,
   );
+
+  fillMock(); // Заполняет фотографии с диска.
 
   runApp(MaterialApp(home: HomePage(themeController: themeController)));
 }
