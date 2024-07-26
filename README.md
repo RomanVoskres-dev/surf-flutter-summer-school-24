@@ -1,3 +1,3 @@
 # surf_flutter_summer_school_24
 
-Шаблонный репозиторий для Surf Flutter Summer School '24
+Не успел в main. Смотреть в ветку day-5
