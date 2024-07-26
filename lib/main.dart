@@ -20,7 +20,7 @@ void main() async {
     themeRepository: themeRepository,
   );
 
-  fillMock(); // Заполняет фотографии с диска.
+  fillRepository(); // Заполняет фотографии с диска.
 
   runApp(MaterialApp(home: HomePage(themeController: themeController)));
 }

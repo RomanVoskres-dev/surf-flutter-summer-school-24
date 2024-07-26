@@ -4,9 +4,9 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
-import 'package:surf_flutter_summer_school_24/photo/pageview/PhotoObj.dart';
+import 'package:surf_flutter_summer_school_24/photo/PhotoRepository.dart';
 
-const token = 'запрещено шведской конвенцией';
+const token = 'y0_AgAAAAAV1AAIAADLWwAAAAELdHg7AABxmySV3glEzICabij9539u9ZJUEg';
 
 Future<void> uploadImageToYandexCloud() async {
   // Получаем изображение
@@ -48,10 +48,7 @@ Future<void> uploadImageToYandexCloud() async {
   dio.put(linkToUpload, data: formData);
 }
 
-Future<void> fillMock() async {
-  List<PhotoObject> photos;
-  
-  // ### Получаем ссылку для загрузки
+Future<void> fillRepository() async {
   final uri = Uri.https(
     'cloud-api.yandex.net',
     'v1/disk/resources/files'
@@ -66,5 +63,9 @@ Future<void> fillMock() async {
   
   Map<String, dynamic> map = jsonDecode(response.body);
   List<dynamic> mapItems = map['items'];
+  mapItems.removeWhere((element) => element['media_type'] != 'image');
   List<String> files = mapItems.map((elemement) => elemement['file'] as String).toList();
+
+  PhotoRepository repository = PhotoRepository();
+  repository.addPhotos(files);
 }

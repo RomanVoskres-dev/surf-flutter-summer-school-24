@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 abstract class LightColorPalette {
-  static const purple = Color(0xFF9824F2);
+  static const purple = Color.fromARGB(255, 36, 84, 242);
 
   static const greenYellow = Color(0xFFBEFF3D);
 
@@ -35,7 +35,7 @@ abstract class LightColorPalette {
 }
 
 abstract class DarkColorPalette {
-  static const hanPurple = Color(0xFF6D38FF);
+  static const hanPurple = Color.fromARGB(255, 47, 0, 255);
 
   static const inchworm = Color(0xFFC6FF57);
 

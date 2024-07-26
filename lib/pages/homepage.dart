@@ -1,12 +1,11 @@
-import 'package:surf_flutter_summer_school_24/photo/pageview/PhotoObj.dart';
+import 'package:surf_flutter_summer_school_24/photo/PhotoObj.dart';
+import 'package:surf_flutter_summer_school_24/photo/PhotoRepository.dart';
 
 import '../feature/theme/ui/theme_builder.dart';
 import '../feature/theme/domain/theme_controller.dart';
 import '../uikit/theme/theme_data.dart';
 import '../feature/theme/di/theme_inherited.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '/photo/pageview/photo_controller.dart';
 import 'watchpage.dart';
 
 class HomePage extends StatelessWidget {
@@ -42,7 +41,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  PhotoController _controller = PhotoController();
+  PhotoRepository repository = PhotoRepository();
 
   @override
   void initState() {
@@ -53,9 +52,9 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Постограм'),
+        title: const Text('Постограм'),
         centerTitle: true,
-        titleTextStyle: TextStyle(fontSize: 30),
+        titleTextStyle: const TextStyle(fontSize: 30),
         actions: [
         IconButton(
           icon: const Icon(Icons.settings),
@@ -69,8 +68,8 @@ class _HomeState extends State<Home> {
                       onTap: () {
                           ThemeInherited.of(context).switchThemeMode();
                         },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
                         child: Row(
                           children: [
                             Icon(Icons.bolt),
@@ -81,10 +80,10 @@ class _HomeState extends State<Home> {
                     ),
                     GestureDetector (
                       onTap: () {
-                          ThemeInherited.of(context).switchThemeMode();
+                          //uploadImageToYandexCloud
                         },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
                         child: Row(
                           children: [
                             Icon(Icons.cloud),
@@ -102,7 +101,7 @@ class _HomeState extends State<Home> {
       ],
       ),
       body: FutureBuilder(
-        future: _controller.getPhotos(),
+        future: repository.getPhotos(),
         builder: (context, snapshot)
         {
           List<PhotoObject>? photos = snapshot.data;
@@ -124,7 +123,7 @@ class _HomeState extends State<Home> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => PageViewExampleApp(themeController: widget.themeController)),
+                        MaterialPageRoute(builder: (context) => PageViewExampleApp(themeController: widget.themeController, indexImage: index, lengthPhotos: photos.length)),
                       );
                     },
                   );
@@ -133,8 +132,8 @@ class _HomeState extends State<Home> {
           }
           else
           {
-            return new Scaffold(
-              body: new Image.asset(
+            return Scaffold(
+              body: Image.asset(
                 "assets/UI/windows.jpg",
                 fit: BoxFit.cover,
                 height: double.infinity,
@@ -159,7 +158,7 @@ class GridImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset(
+    return Image.network(
       pathImg,
       fit: BoxFit.cover,
     );
