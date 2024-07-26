@@ -6,7 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:surf_flutter_summer_school_24/photo/PhotoRepository.dart';
 
-const token = 'y0_AgAAAAAV1AAIAADLWwAAAAELdHg7AABxmySV3glEzICabij9539u9ZJUEg';
+const token = 'швейцарская конвенция запретила';
 
 Future<void> uploadImageToYandexCloud() async {
   // Получаем изображение
