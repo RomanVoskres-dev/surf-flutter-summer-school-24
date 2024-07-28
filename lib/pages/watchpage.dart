@@ -1,23 +1,28 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import '../homepage.dart';
+import '../feature/theme/di/theme_inherited.dart';
+import '../feature/theme/domain/theme_controller.dart';
+import '../feature/theme/ui/theme_builder.dart';
+import '../uikit/theme/theme_data.dart';
 
 class PageViewExampleApp extends StatelessWidget {
-  const PageViewExampleApp({super.key});
+  const PageViewExampleApp({required this.themeController, super.key});
+
+  final ThemeController themeController;
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('      00.00.00      '),
-          centerTitle: true,
-          titleTextStyle: TextStyle(color: Colors.white, fontSize: 30),
-          backgroundColor: Color.fromARGB(10, 15, 15, 15),
-          // Text('$_currentPageIndex/4', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30), textAlign: TextAlign.center,)
-        ),
-        body: const PageViewExample(),
-        backgroundColor: Color.fromARGB(143, 73, 73, 73),
+    return ThemeInherited(
+      themeController: themeController,
+      child: ThemeBuilder(
+        builder: (_, themeMode) {
+          return MaterialApp(
+            theme: AppThemeData.lightTheme,
+            darkTheme: AppThemeData.darkTheme,
+            themeMode: themeMode,
+            home: PageViewExample(),
+          );
+        },
       ),
     );
   }
@@ -44,19 +49,12 @@ class _PageViewExampleState extends State<PageViewExample>
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    _pageViewController.dispose();
-    _tabController.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Stack(
       alignment: Alignment.bottomCenter,
       children: <Widget>[
         Row(
-          children: [Text('$_currentPageIndex/4', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30), textAlign: TextAlign.center,)],
+          children: [Text('$_currentPageIndex/4', style: TextStyle(fontSize: 30), textAlign: TextAlign.center,)],
         ),
         PageView(
           controller: _pageViewController,
@@ -102,6 +100,13 @@ class _PageViewExampleState extends State<PageViewExample>
         return false;
     }
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _pageViewController.dispose();
+    _tabController.dispose();
+  }
 }
 
 class ScrollImage extends StatelessWidget {
@@ -119,7 +124,6 @@ class ScrollImage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-        //Text(pathImg),
         Image.asset(
           pathImg,
           height: MediaQuery.of(context).size.height-300,
